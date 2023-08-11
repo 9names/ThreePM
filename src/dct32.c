@@ -82,7 +82,7 @@
 #define COS4_0  0x5a82799a	/* Q31 */
 
 // faster in ROM
-static const int dcttab[48] = {
+static int dcttab[48] = {
 	/* first pass */
 	COS0_0, COS0_15, COS1_0,	/* 31, 27, 31 */
 	COS0_1, COS0_14, COS1_1,	/* 31, 29, 31 */
