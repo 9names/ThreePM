@@ -80,6 +80,7 @@ static void ClearBuffer(void *buf, int nBytes)
 }
 #endif
 
+#ifndef BYO_BUFFERS
 /**************************************************************************************
  * Function:    AllocateBuffers
  *
@@ -189,6 +190,7 @@ MP3DecInfo *AllocateBuffers(void)
 
 	return mp3DecInfo;
 }
+#endif // BYO_BUFFERS
 
 #ifdef MPDEC_FREE
 #define SAFE_FREE(x)	{if (x)	MPDEC_FREE(x);	(x) = 0;}	/* helper macro */
