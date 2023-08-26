@@ -67,6 +67,8 @@
  *
  * Notes:       slow, platform-independent equivalent to memset(buf, 0, nBytes)
  **************************************************************************************/
+#ifndef BYO_BUFFERS
+
 #ifndef MPDEC_ALLOCATOR
 static void ClearBuffer(void *buf, int nBytes)
 {
@@ -80,7 +82,6 @@ static void ClearBuffer(void *buf, int nBytes)
 }
 #endif
 
-#ifndef BYO_BUFFERS
 /**************************************************************************************
  * Function:    AllocateBuffers
  *

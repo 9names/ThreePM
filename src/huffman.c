@@ -42,6 +42,7 @@
  **************************************************************************************/
 
 #include "coder.h"
+#include "fastfunc.h"
 
 #include <stdio.h>
 
@@ -379,7 +380,7 @@ static int DecodeHuffmanQuads(int *vwxy, int nVals, int tabIdx, int bitsLeft, co
  *                out of bits prematurely (invalid bitstream)
  **************************************************************************************/
 // .data about 1ms faster per frame
-int DecodeHuffman(MP3DecInfo *mp3DecInfo, const unsigned char *buf, int *bitOffset, int huffBlockBits, int gr, int ch)
+FAST_FUNC int DecodeHuffman(MP3DecInfo *mp3DecInfo, const unsigned char *buf, int *bitOffset, int huffBlockBits, int gr, int ch)
 {
 	int r1Start, r2Start, rEnd[4];	/* region boundaries */
 	int i, w, bitsUsed, bitsLeft;

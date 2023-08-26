@@ -44,6 +44,7 @@
 
 #include "coder.h"
 #include "assembly.h"
+#include "fastfunc.h"
 #include <stdint.h>
 
 /**************************************************************************************
@@ -719,7 +720,7 @@ static int HybridTransform(int *xCurr, int *xPrev, int y[BLOCK_SIZE][NBANDS], Si
  * Return:      0 on success,  -1 if null input pointers
  **************************************************************************************/
  // a bit faster in RAM
-/*__attribute__ ((section (".data")))*/ int IMDCT(MP3DecInfo *mp3DecInfo, int gr, int ch)
+FAST_FUNC int IMDCT(MP3DecInfo *mp3DecInfo, int gr, int ch)
 {
 	int nBfly, blockCutoff;
 	FrameHeader *fh;
