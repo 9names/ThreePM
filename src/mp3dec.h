@@ -74,6 +74,8 @@
 #
 #elif defined(__MK66FX1M0__) || defined(__MK64FX512__) || defined(__MK20DX256__)	/* teensy 3.6, 3.5, or 3.1/2 */
 #
+#elif defined(__riscv)
+#
 #elif defined(MP3DEC_GENERIC)
 #
 #else

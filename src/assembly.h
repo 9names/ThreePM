@@ -506,6 +506,66 @@ __attribute__((__always_inline__)) static __inline Word64 SAR64(Word64 x, int n)
 
 //END cortex m4
 
+#elif defined(__riscv)
+typedef long long Word64;
+
+static __inline int MULSHIFT32(int x, int y)
+{
+	unsigned int result = 0;
+	asm volatile ("mulh %0, %1, %2" : "=r"(result): "r"(x), "r"(y));
+	return result;
+}
+
+static __inline int FASTABS(int x)
+{
+	int sign;
+
+	sign = x >> (sizeof(int) * 8 - 1);
+	x ^= sign;
+	x -= sign;
+
+	return x;
+}
+
+static __inline int CLZ(int x)
+{
+	int numZeros;
+
+	if (!x)
+		return (sizeof(int) * 8);
+
+	numZeros = 0;
+	while (!(x & 0x80000000)) {
+		numZeros++;
+		x <<= 1;
+	}
+
+	return numZeros;
+}
+
+static __inline Word64 MADD64(Word64 sum, int a, int b)
+{
+	unsigned int result_hi = 0;
+	unsigned int result_lo = 0;
+	asm volatile ("mulh %0, %1, %2" : "=r"(result_hi): "r"(a), "r"(b));
+	asm volatile ("mul  %0, %1, %2" : "=r"(result_lo): "r"(a), "r"(b));
+
+	Word64 result = result_hi;
+	result <<= 32;
+	result += result_lo;
+	result += sum;
+	return result;
+}
+
+static __inline Word64 SHL64(Word64 x, int n)
+{
+	return (x<<n);
+}
+
+static __inline Word64 SAR64(Word64 x, int n)
+{
+	return (x >> n);
+}
 
 #else
 
