@@ -45,6 +45,7 @@
 #include "mp3common.h"	/* includes mp3dec.h (public API) and internal, platform-independent API */
 //#include "hxthreadyield.h"
 
+#ifndef BYO_BUFFERS
 /**************************************************************************************
  * Function:    MP3InitDecoder
  *
@@ -65,6 +66,7 @@ HMP3Decoder MP3InitDecoder(void)
 
 	return (HMP3Decoder)mp3DecInfo;
 }
+#endif
 
 /**************************************************************************************
  * Function:    MP3FreeDecoder

@@ -68,7 +68,6 @@
  * Notes:       slow, platform-independent equivalent to memset(buf, 0, nBytes)
  **************************************************************************************/
 #ifndef BYO_BUFFERS
-
 #ifndef MPDEC_ALLOCATOR
 static void ClearBuffer(void *buf, int nBytes)
 {
@@ -80,6 +79,7 @@ static void ClearBuffer(void *buf, int nBytes)
 
 	return;
 }
+#endif
 #endif
 
 /**************************************************************************************
@@ -100,7 +100,8 @@ static void ClearBuffer(void *buf, int nBytes)
  **************************************************************************************/
 MP3DecInfo *AllocateBuffers(void)
 {
-	MP3DecInfo *mp3DecInfo;
+	MP3DecInfo *mp3DecInfo = (MP3DecInfo*)0;
+#ifndef BYO_BUFFERS
 #ifdef MPDEC_ALLOCATOR
 	FrameHeader *fh;
 	SideInfo *si;
@@ -188,10 +189,9 @@ MP3DecInfo *AllocateBuffers(void)
 	DV_DEBUG_USART_Trace( COPY_DEBUG_BUFFER );
 #endif
 #endif
-
+#endif
 	return mp3DecInfo;
 }
-#endif // BYO_BUFFERS
 
 #ifdef MPDEC_FREE
 #define SAFE_FREE(x)	{if (x)	MPDEC_FREE(x);	(x) = 0;}	/* helper macro */
