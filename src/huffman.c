@@ -392,13 +392,13 @@ FAST_FUNC int DecodeHuffman(MP3DecInfo *mp3DecInfo, const unsigned char *buf, in
 	HuffmanInfo *hi;
 
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || !mp3DecInfo->SideInfoPS || !mp3DecInfo->ScaleFactorInfoPS || !mp3DecInfo->HuffmanInfoPS)
+	if (!mp3DecInfo)
 		return -1;
 
-	fh = ((FrameHeader *)(mp3DecInfo->FrameHeaderPS));
-	si = ((SideInfo *)(mp3DecInfo->SideInfoPS));
+	fh = &mp3DecInfo->fh;
+	si = &mp3DecInfo->si;
 	sis = &si->sis[gr][ch];
-	hi = (HuffmanInfo*)(mp3DecInfo->HuffmanInfoPS);
+	hi = &mp3DecInfo->hi;
 
 	if (huffBlockBits < 0)
 		return -1;

@@ -81,18 +81,16 @@ int Dequantize(MP3DecInfo *mp3DecInfo, int gr)
 	CriticalBandInfo *cbi;
 
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || !mp3DecInfo->SideInfoPS || !mp3DecInfo->ScaleFactorInfoPS || 
-		!mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->DequantInfoPS)
+	if (!mp3DecInfo)
 		return -1;
 
-	fh = (FrameHeader *)(mp3DecInfo->FrameHeaderPS);
-
 	/* si is an array of up to 4 structs, stored as gr0ch0, gr0ch1, gr1ch0, gr1ch1 */
-	si = (SideInfo *)(mp3DecInfo->SideInfoPS);
-	sfi = (ScaleFactorInfo *)(mp3DecInfo->ScaleFactorInfoPS);
-	hi = (HuffmanInfo *)mp3DecInfo->HuffmanInfoPS;
-	di = (DequantInfo *)mp3DecInfo->DequantInfoPS;
-	cbi = di->cbi;
+	fh = &mp3DecInfo->fh;
+	si = &mp3DecInfo->si;
+	sfi = &mp3DecInfo->sfi;
+	hi  = &mp3DecInfo->hi;
+	di  = &mp3DecInfo->di;
+	cbi = mp3DecInfo->di.cbi;
 	mOut[0] = mOut[1] = 0;
 
 	/* dequantize all the samples in each channel */

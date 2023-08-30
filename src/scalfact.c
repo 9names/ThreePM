@@ -362,11 +362,11 @@ int UnpackScaleFactors(MP3DecInfo *mp3DecInfo, const unsigned char *buf, int *bi
 	ScaleFactorInfo *sfi;
 
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || !mp3DecInfo->SideInfoPS || !mp3DecInfo->ScaleFactorInfoPS)
+	if (!mp3DecInfo)
 		return -1;
-	fh = ((FrameHeader *)(mp3DecInfo->FrameHeaderPS));
-	si = ((SideInfo *)(mp3DecInfo->SideInfoPS));
-	sfi = ((ScaleFactorInfo *)(mp3DecInfo->ScaleFactorInfoPS));
+	fh = &mp3DecInfo->fh;
+	si = &mp3DecInfo->si;
+	sfi = &mp3DecInfo->sfi;
 
 	/* init GetBits reader */
 	startBuf = buf;

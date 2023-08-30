@@ -187,15 +187,7 @@ int CalcBitsUsed(BitStreamInfo *bsi, const unsigned char *startBuf, int startOff
  **************************************************************************************/
 int CheckPadBit(MP3DecInfo *mp3DecInfo)
 {
-	FrameHeader *fh;
-
-	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS)
-		return -1;
-
-	fh = ((FrameHeader *)(mp3DecInfo->FrameHeaderPS));
-
-	return (fh->paddingBit ? 1 : 0);
+	return mp3DecInfo->fh.paddingBit ? 1 : 0;
 }
 
 /**************************************************************************************
@@ -219,13 +211,11 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, const unsigned char *buf)
 {
 
 	int verIdx;
-	FrameHeader *fh;
-
 	/* validate pointers and sync word */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || (buf[0] & SYNCWORDH) != SYNCWORDH || (buf[1] & SYNCWORDL) != SYNCWORDL)
+	if (!mp3DecInfo || (buf[0] & SYNCWORDH) != SYNCWORDH || (buf[1] & SYNCWORDL) != SYNCWORDL)
 		return -1;
 
-	fh = ((FrameHeader *)(mp3DecInfo->FrameHeaderPS));
+	FrameHeader* fh = &mp3DecInfo->fh;
 
 	/* read header fields - use bitmasks instead of GetBits() for speed, since format never varies */
 	verIdx =         (buf[1] >> 3) & 0x03;
@@ -308,11 +298,11 @@ int UnpackSideInfo(MP3DecInfo *mp3DecInfo, const unsigned char *buf)
 	SideInfoSub *sis;
 
 	/* validate pointers and sync word */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || !mp3DecInfo->SideInfoPS)
+	if (!mp3DecInfo)
 		return -1;
 
-	fh = ((FrameHeader *)(mp3DecInfo->FrameHeaderPS));
-	si = ((SideInfo *)(mp3DecInfo->SideInfoPS));
+	fh = &mp3DecInfo->fh;
+	si = &mp3DecInfo->si;
 
 	bsi = &bitStreamInfo;
 	if (fh->ver == MPEG1) {

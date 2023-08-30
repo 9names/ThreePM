@@ -104,14 +104,6 @@ MP3DecInfo *AllocateBuffers(void)
 	MP3DecInfo *mp3DecInfo = (MP3DecInfo*)0;
 #ifndef BYO_BUFFERS
 #ifdef MPDEC_ALLOCATOR
-	FrameHeader *fh;
-	SideInfo *si;
-	ScaleFactorInfo *sfi;
-	HuffmanInfo *hi;
-	DequantInfo *di;
-	IMDCTInfo *mi;
-	SubbandInfo *sbi;
-
 	mp3DecInfo = (MP3DecInfo *)MPDEC_ALLOCATOR(sizeof(MP3DecInfo));
 	if (!mp3DecInfo)
 	{
@@ -123,61 +115,18 @@ MP3DecInfo *AllocateBuffers(void)
 #endif
 		return 0;
 	}
-
-	hi =  (HuffmanInfo *)     MPDEC_ALLOCATOR(sizeof(HuffmanInfo));
-	sbi = (SubbandInfo *)     MPDEC_ALLOCATOR(sizeof(SubbandInfo));
-	mi =  (IMDCTInfo *)       MPDEC_ALLOCATOR(sizeof(IMDCTInfo));
-	di =  (DequantInfo *)     MPDEC_ALLOCATOR(sizeof(DequantInfo));
-	si =  (SideInfo *)        MPDEC_ALLOCATOR(sizeof(SideInfo));
-	sfi = (ScaleFactorInfo *) MPDEC_ALLOCATOR(sizeof(ScaleFactorInfo));
-	fh =  (FrameHeader *)     MPDEC_ALLOCATOR(sizeof(FrameHeader));
-
-	if (!fh || !si || !sfi || !hi || !di || !mi || !sbi) {
-#ifndef _WIN32
-#ifdef DEMO_HELIX_FOOTPRINT
-    sprintf(COPY_DEBUG_BUFFER,"mp3DecInfo:%d[%d] | fh:%d[%d] | si:%d[%d] \
-      | sfi:%d[%d] | hi:%d[%d] | di:%d[%d] | mi:%d[%d] | sbi:%d[%d]\n",
-      (int)mp3DecInfo, (int)sizeof(MP3DecInfo), (int)fh, (int)sizeof(FrameHeader),
-      (int)si, (int)sizeof(SideInfo), (int)sfi, (int)sizeof(ScaleFactorInfo),
-      (int)hi, (int)sizeof(HuffmanInfo), (int)di, (int)sizeof(DequantInfo),
-      (int)mi, (int)sizeof(IMDCTInfo), (int)sbi, (int)sizeof(SubbandInfo) );
-    DV_DEBUG_USART_Trace( COPY_DEBUG_BUFFER );
-#endif
-#endif
-		FreeBuffers(mp3DecInfo);	// safe to call - only frees memory that was successfully allocated
-		return 0;
-	}
 #else
 	// Buffers:
 	static char s_mp3DecInfo[sizeof(MP3DecInfo)];
 	mp3DecInfo = (MP3DecInfo *)s_mp3DecInfo;
 	ClearBuffer(mp3DecInfo, sizeof(MP3DecInfo));
-	mp3DecInfo->FrameHeaderPS =     (void *)mp3DecInfo->fh;
-	mp3DecInfo->SideInfoPS =        (void *)mp3DecInfo->si;
-	mp3DecInfo->ScaleFactorInfoPS = (void *)mp3DecInfo->sfi;
-	mp3DecInfo->HuffmanInfoPS =     (void *)mp3DecInfo->hi;
-	mp3DecInfo->DequantInfoPS =     (void *)mp3DecInfo->di;
-	mp3DecInfo->IMDCTInfoPS =       (void *)mp3DecInfo->mi;
-	mp3DecInfo->SubbandInfoPS =     (void *)mp3DecInfo->sbi;
 	/* important to do this - DSP primitives assume a bunch of state variables are 0 on first use */
-#endif
-
-#if defined(BYO_BUFFERS) || MPDEC_ALLOCATOR
-	mp3DecInfo->FrameHeaderPS =     (void *)fh;
-	mp3DecInfo->SideInfoPS =        (void *)si;
-	mp3DecInfo->ScaleFactorInfoPS = (void *)sfi;
-	mp3DecInfo->HuffmanInfoPS =     (void *)hi;
-	mp3DecInfo->DequantInfoPS =     (void *)di;
-	mp3DecInfo->IMDCTInfoPS =       (void *)mi;
-	mp3DecInfo->SubbandInfoPS =     (void *)sbi;
 #endif
 
 #ifndef _WIN32
 #ifdef DEMO_HELIX_FOOTPRINT
 	sprintf(COPY_DEBUG_BUFFER, "Total decoder malloc size: %d\n",
-					(int)(sizeof(MP3DecInfo) + sizeof(FrameHeader) + sizeof(SideInfo)
-					+ sizeof(ScaleFactorInfo) + sizeof(HuffmanInfo) + sizeof(DequantInfo)
-					+ sizeof(IMDCTInfo) + sizeof(SubbandInfo)));
+					(int)(sizeof(MP3DecInfo)));
 	DV_DEBUG_USART_Trace( COPY_DEBUG_BUFFER );
 #endif
 #endif
@@ -208,14 +157,6 @@ void FreeBuffers(MP3DecInfo *mp3DecInfo)
 {
 	if (!mp3DecInfo)
 		return;
-
-	// SAFE_FREE(mp3DecInfo->FrameHeaderPS);
-	// SAFE_FREE(mp3DecInfo->SideInfoPS);
-	// SAFE_FREE(mp3DecInfo->ScaleFactorInfoPS);
-	// SAFE_FREE(mp3DecInfo->HuffmanInfoPS);
-	// SAFE_FREE(mp3DecInfo->DequantInfoPS);
-	// SAFE_FREE(mp3DecInfo->IMDCTInfoPS);
-	// SAFE_FREE(mp3DecInfo->SubbandInfoPS);
 
 	SAFE_FREE(mp3DecInfo);
 }

@@ -730,15 +730,14 @@ FAST_FUNC int IMDCT(MP3DecInfo *mp3DecInfo, int gr, int ch)
 	BlockCount bc;
 
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->FrameHeaderPS || !mp3DecInfo->SideInfoPS || 
-		!mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->IMDCTInfoPS)
+	if (!mp3DecInfo)
 		return -1;
 
 	/* si is an array of up to 4 structs, stored as gr0ch0, gr0ch1, gr1ch0, gr1ch1 */
-	fh = (FrameHeader *)(mp3DecInfo->FrameHeaderPS);
-	si = (SideInfo *)(mp3DecInfo->SideInfoPS);
-	hi = (HuffmanInfo*)(mp3DecInfo->HuffmanInfoPS);
-	mi = (IMDCTInfo *)(mp3DecInfo->IMDCTInfoPS);
+	fh = &mp3DecInfo->fh;
+	si = &mp3DecInfo->si;
+	hi = &mp3DecInfo->hi;
+	mi = &mp3DecInfo->mi;
 
 	/* anti-aliasing done on whole long blocks only
 	 * for mixed blocks, nBfly always 1, except 3 for 8 kHz MPEG 2.5 (see sfBandTab) 

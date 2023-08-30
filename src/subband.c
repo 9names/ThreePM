@@ -64,11 +64,11 @@ int Subband(MP3DecInfo *mp3DecInfo, short *pcmBuf)
 	SubbandInfo *sbi;
 
 	/* validate pointers */
-	if (!mp3DecInfo || !mp3DecInfo->HuffmanInfoPS || !mp3DecInfo->IMDCTInfoPS || !mp3DecInfo->SubbandInfoPS)
+	if (!mp3DecInfo)
 	return -1;
 
-	mi = (IMDCTInfo *)(mp3DecInfo->IMDCTInfoPS);
-	sbi = (SubbandInfo*)(mp3DecInfo->SubbandInfoPS);
+	mi = &mp3DecInfo->mi;
+	sbi = &mp3DecInfo->sbi;
 
 	if (mp3DecInfo->nChans == 2) {
 		/* stereo */
