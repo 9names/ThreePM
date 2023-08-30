@@ -97,13 +97,6 @@ extern "C" {
 #define MAX_NCHAN		2		/* max channels */
 #define MAX_NSAMP		576		/* max samples per channel, per granule */
 
-/* map to 0,1,2 to make table indexing easier */
-typedef enum {
-	MPEG1 =  0,
-	MPEG2 =  1,
-	MPEG25 = 2
-} MPEGVersion;
-
 typedef void *HMP3Decoder;
 
 enum {

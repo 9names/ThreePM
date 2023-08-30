@@ -46,14 +46,13 @@
 
 #include "mp3dec.h"
 #include "statname.h"	/* do name-mangling for static linking */
+// #include "coder.h"
+#include "types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define MAX_SCFBD		4		/* max scalefactor bands per channel */
-#define NGRANS_MPEG1	2
-#define NGRANS_MPEG2	1
 
 /* 11-bit syncword if MPEG 2.5 extensions are enabled */
 #define	SYNCWORDH		0xff
@@ -96,13 +95,14 @@ typedef struct _MP3DecInfo {
 	int mainDataBytes;
 
 	int part23Length[MAX_NGRAN][MAX_NCHAN];
-
+	FrameHeader fh;
+	SideInfo si;
+	ScaleFactorInfo sfi;
+	HuffmanInfo hi;
+	DequantInfo di;
+	IMDCTInfo mi;
+	SubbandInfo sbi;
 } MP3DecInfo;
-
-typedef struct _SFBandTable {
-	short l[23];
-	short s[14];
-} SFBandTable;
 
 /* decoder functions which must be implemented for each platform */
 MP3DecInfo *AllocateBuffers(void);
