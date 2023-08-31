@@ -64,15 +64,6 @@ extern "C" {
  */
 
 typedef struct _MP3DecInfo {
-	/* pointers to platform-specific data structures */
-	void *FrameHeaderPS;
-	void *SideInfoPS;
-	void *ScaleFactorInfoPS;
-	void *HuffmanInfoPS;
-	void *DequantInfoPS;
-	void *IMDCTInfoPS;
-	void *SubbandInfoPS;
-
 	/* buffer which must be large enough to hold largest possible main_data section */
 	unsigned char mainBuf[MAINBUF_SIZE];
 
