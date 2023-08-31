@@ -111,6 +111,7 @@ void IntensityProcMPEG1(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 	int fl, fr, fls[3], frs[3];
 	int cbStartL=0, cbStartS=0, cbEndL=0, cbEndS=0;
 	int *isfTab;
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 
 	// silence unused var warning
 	(void)mixFlag;
@@ -125,13 +126,13 @@ void IntensityProcMPEG1(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 		cbStartL = cbi[1].cbEndL + 1;
 		cbEndL =   cbi[0].cbEndL + 1;
 		cbStartS = cbEndS = 0;
-		i = fh->sfBand->l[cbStartL];
+		i = sfBand->l[cbStartL];
 	} else if (cbi[1].cbType == 1 || cbi[1].cbType == 2) {
 		/* short or mixed block */
 		cbStartS = cbi[1].cbEndSMax + 1;
 		cbEndS =   cbi[0].cbEndSMax + 1;
 		cbStartL = cbEndL = 0;
-		i = 3 * fh->sfBand->s[cbStartS];
+		i = 3 * sfBand->s[cbStartS];
 	}
 
 	sampsLeft = nSamps - i;		/* process to length of left */
@@ -149,7 +150,7 @@ void IntensityProcMPEG1(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 			fr = isfTab[6] - isfTab[isf];
 		}
 
-		n = fh->sfBand->l[cb + 1] - fh->sfBand->l[cb];
+		n = sfBand->l[cb + 1] - sfBand->l[cb];
 		for (j = 0; j < n && sampsLeft > 0; j++, i++) {
 			xr = MULSHIFT32(fr, x[0][i]) << 2;	x[1][i] = xr; mOutR |= FASTABS(xr);
 			xl = MULSHIFT32(fl, x[0][i]) << 2;	x[0][i] = xl; mOutL |= FASTABS(xl);
@@ -170,7 +171,7 @@ void IntensityProcMPEG1(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 			}
 		}
 
-		n = fh->sfBand->s[cb + 1] - fh->sfBand->s[cb];
+		n = sfBand->s[cb + 1] - sfBand->s[cb];
 		for (j = 0; j < n && sampsLeft >= 3; j++, i+=3) {
 			xr = MULSHIFT32(frs[0], x[0][i+0]) << 2;	x[1][i+0] = xr;	mOutR |= FASTABS(xr);
 			xl = MULSHIFT32(fls[0], x[0][i+0]) << 2;	x[0][i+0] = xl;	mOutL |= FASTABS(xl);
@@ -225,6 +226,7 @@ void IntensityProcMPEG2(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 
 	isfTab = (int *)ISFMpeg2[sfjs->intensityScale][midSideFlag];
 	mOutL = mOutR = 0;
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 
 	/* fill buffer with illegal intensity positions (depending on slen) */
 	for (k = r = 0; r < 4; r++) {
@@ -238,7 +240,7 @@ void IntensityProcMPEG2(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 		il[21] = il[22] = 1;
 		cbStartL = cbi[1].cbEndL + 1;	/* start at end of right */
 		cbEndL =   cbi[0].cbEndL + 1;	/* process to end of left */
-		i = fh->sfBand->l[cbStartL];
+		i = sfBand->l[cbStartL];
 		sampsLeft = nSamps - i;
 
 		for(cb = cbStartL; cb < cbEndL; cb++) {
@@ -251,7 +253,7 @@ void IntensityProcMPEG2(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 				fl = isfTab[(sfIdx & 0x01 ? isf : 0)];
 				fr = isfTab[(sfIdx & 0x01 ? 0 : isf)];
 			}
-			n = MIN(fh->sfBand->l[cb + 1] - fh->sfBand->l[cb], sampsLeft);
+			n = MIN(sfBand->l[cb + 1] - sfBand->l[cb], sampsLeft);
 
 			for(j = 0; j < n; j++, i++) {
 				xr = MULSHIFT32(fr, x[0][i]) << 2;	x[1][i] = xr;	mOutR |= FASTABS(xr);
@@ -270,7 +272,7 @@ void IntensityProcMPEG2(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 		for(w = 0; w < 3; w++) {
 			cbStartS = cbi[1].cbEndS[w] + 1;		/* start at end of right */
 			cbEndS =   cbi[0].cbEndS[w] + 1;		/* process to end of left */
-			i = 3 * fh->sfBand->s[cbStartS] + w;
+			i = 3 * sfBand->s[cbStartS] + w;
 
 			/* skip through sample array by 3, so early-exit logic would be more tricky */
 			for(cb = cbStartS; cb < cbEndS; cb++) {
@@ -283,7 +285,7 @@ void IntensityProcMPEG2(int x[MAX_NCHAN][MAX_NSAMP], int nSamps, FrameHeader *fh
 					fl = isfTab[(sfIdx & 0x01 ? isf : 0)];
 					fr = isfTab[(sfIdx & 0x01 ? 0 : isf)];
 				}
-				n = fh->sfBand->s[cb + 1] - fh->sfBand->s[cb];
+				n = sfBand->s[cb + 1] - sfBand->s[cb];
 
 				for(j = 0; j < n; j++, i+=3) {
 					xr = MULSHIFT32(fr, x[0][i]) << 2;	x[1][i] = xr;	mOutR |= FASTABS(xr);

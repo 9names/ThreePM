@@ -251,6 +251,7 @@ static const int pow2frac[8] = {
 	int globalGain, gainI;
 	int cbMax[3];
 	ARRAY3 *buf;    /* short block reorder */
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 	
 	/* set default start/end points for short/long blocks - will update with non-zero cb info */
 	if (sis->blockType == 2) {
@@ -291,7 +292,7 @@ static const int pow2frac[8] = {
 	for (cb = 0; cb < cbEndL; cb++) {
 
 		nonZero = 0;
-		nSamps = fh->sfBand->l[cb + 1] - fh->sfBand->l[cb];
+		nSamps = sfBand->l[cb + 1] - sfBand->l[cb];
 		gainI = 210 - globalGain + sfactMultiplier * (sfis->l[cb] + (sis->preFlag ? (int)preTab[cb] : 0));
 
 		nonZero |= DequantBlock(sampleBuf + i, sampleBuf + i, nSamps, gainI);
@@ -320,7 +321,7 @@ static const int pow2frac[8] = {
 	cbMax[2] = cbMax[1] = cbMax[0] = cbStartS;
 	for (cb = cbStartS; cb < cbEndS; cb++) {
 
-		nSamps = fh->sfBand->s[cb + 1] - fh->sfBand->s[cb];
+		nSamps = sfBand->s[cb + 1] - sfBand->s[cb];
 		for (w = 0; w < 3; w++) {
 			nonZero =  0;
 			gainI = 210 - globalGain + 8*sis->subBlockGain[w] + sfactMultiplier*(sfis->s[cb][w]);

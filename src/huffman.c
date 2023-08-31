@@ -399,6 +399,7 @@ FAST_FUNC int DecodeHuffman(MP3DecInfo *mp3DecInfo, const unsigned char *buf, in
 	si = &mp3DecInfo->si;
 	sis = &si->sis[gr][ch];
 	hi = &mp3DecInfo->hi;
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 
 	if (huffBlockBits < 0)
 		return -1;
@@ -406,20 +407,20 @@ FAST_FUNC int DecodeHuffman(MP3DecInfo *mp3DecInfo, const unsigned char *buf, in
 	/* figure out region boundaries (the first 2*bigVals coefficients divided into 3 regions) */
 	if (sis->winSwitchFlag && sis->blockType == 2) {
 		if (sis->mixedBlock == 0) {
-			r1Start = fh->sfBand->s[(sis->region0Count + 1)/3] * 3;
+			r1Start = sfBand->s[(sis->region0Count + 1)/3] * 3;
 		} else {
 			if (fh->ver == MPEG1) {
-				r1Start = fh->sfBand->l[sis->region0Count + 1];
+				r1Start = 	sfBand->l[sis->region0Count + 1];
 			} else {
 				/* see MPEG2 spec for explanation */
-				w = fh->sfBand->s[4] - fh->sfBand->s[3];
-				r1Start = fh->sfBand->l[6] + 2*w;
+				w = sfBand->s[4] - sfBand->s[3];
+				r1Start = sfBand->l[6] + 2*w;
 			}
 		}
 		r2Start = MAX_NSAMP;	/* short blocks don't have region 2 */
 	} else {
-		r1Start = fh->sfBand->l[sis->region0Count + 1];
-		r2Start = fh->sfBand->l[sis->region0Count + 1 + sis->region1Count + 1];
+		r1Start = sfBand->l[sis->region0Count + 1];
+		r2Start = sfBand->l[sis->region0Count + 1 + sis->region1Count + 1];
 	}
 
 	/* offset rEnd index by 1 so first region = rEnd[1] - rEnd[0], etc. */

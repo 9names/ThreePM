@@ -738,13 +738,14 @@ FAST_FUNC int IMDCT(MP3DecInfo *mp3DecInfo, int gr, int ch)
 	si = &mp3DecInfo->si;
 	hi = &mp3DecInfo->hi;
 	mi = &mp3DecInfo->mi;
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 
 	/* anti-aliasing done on whole long blocks only
 	 * for mixed blocks, nBfly always 1, except 3 for 8 kHz MPEG 2.5 (see sfBandTab) 
      *   nLongBlocks = number of blocks with (possibly) non-zero power 
 	 *   nBfly = number of butterflies to do (nLongBlocks - 1, unless no long blocks)
 	 */
-	blockCutoff = fh->sfBand->l[(fh->ver == MPEG1 ? 8 : 6)] / 18;	/* same as 3* num short sfb's in spec */
+	blockCutoff = sfBand->l[(fh->ver == MPEG1 ? 8 : 6)] / 18;	/* same as 3* num short sfb's in spec */
 	if (si->sis[gr][ch].blockType != 2) {
 		/* all long transforms */
 		bc.nBlocksLong = MIN((hi->nonZeroBound[ch] + 7) / 18 + 1, 32);	

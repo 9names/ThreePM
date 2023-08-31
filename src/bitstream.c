@@ -235,8 +235,6 @@ int UnpackFrameHeader(MP3DecInfo *mp3DecInfo, const unsigned char *buf)
 	/* check parameters to avoid indexing tables with bad values */
 	if (fh->srIdx == 3 || fh->layer == 4 || fh->brIdx == 15)
 		return -1;
-
-	fh->sfBand = &sfBandTable[fh->ver][fh->srIdx];	/* for readability (we reference sfBandTable many times in decoder) */
 	if (fh->sMode != Joint)		/* just to be safe (dequant, stproc check fh->modeExt) */
 		fh->modeExt = 0;
 

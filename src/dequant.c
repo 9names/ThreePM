@@ -92,6 +92,7 @@ int Dequantize(MP3DecInfo *mp3DecInfo, int gr)
 	di  = &mp3DecInfo->di;
 	cbi = mp3DecInfo->di.cbi;
 	mOut[0] = mOut[1] = 0;
+	const SFBandTable *sfBand = &sfBandTable[fh->ver][fh->srIdx];
 
 	/* dequantize all the samples in each channel */
 	for (ch = 0; ch < mp3DecInfo->nChans; ch++) {
@@ -120,9 +121,9 @@ int Dequantize(MP3DecInfo *mp3DecInfo, int gr)
 		if (fh->modeExt & 0x01) {
 			/* intensity stereo enabled - run mid-side up to start of right zero region */
 			if (cbi[1].cbType == 0)
-				nSamps = fh->sfBand->l[cbi[1].cbEndL + 1];
+				nSamps = sfBand->l[cbi[1].cbEndL + 1];
 			else 
-				nSamps = 3 * fh->sfBand->s[cbi[1].cbEndSMax + 1];
+				nSamps = 3 * sfBand->s[cbi[1].cbEndSMax + 1];
 		} else {
 			/* intensity stereo disabled - run mid-side on whole spectrum */
 			nSamps = MAX(hi->nonZeroBound[0], hi->nonZeroBound[1]);

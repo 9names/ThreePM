@@ -72,8 +72,6 @@ typedef struct _FrameHeader {
     int origFlag;		/* original flag: 0 = copy, 1 = original */
     int emphasis;		/* deemphasis mode */
     int CRCWord;		/* CRC word (16 bits, 0 if crc not enabled) */
-
-	const SFBandTable *sfBand;
 } FrameHeader;
 
 typedef struct _SideInfoSub {
