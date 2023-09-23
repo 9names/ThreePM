@@ -8,7 +8,7 @@ Primary purpose of this fork is to make it integrate better into Rust
 ### Changes since forking from picomp3lib to ThreePM
 - Add const qualifiers to pointers in api that never mutated anything
 - Remove any pointers from MP3DecInfo so that Rust FFI isn't so painful
-- Add #define's for removing static buffers, so that the caller can own all context memory
+- Remove abstractions around allocating. All decoding context is now stored in a plain-old-data struct.
 - ESP32 optimised math functions from https://github.com/ultraembedded/libhelix-mp3/pull/1
 - RISCV optimised math functions from lib-helix https://github.com/ultraembedded/libhelix-mp3
 
