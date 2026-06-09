@@ -76,6 +76,8 @@
 #
 #elif defined(__riscv)
 #
+#elif defined(__GNUC__) && defined(__xtensa__)
+#
 #elif defined(MP3DEC_GENERIC)
 #
 #else
