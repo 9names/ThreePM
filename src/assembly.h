@@ -574,7 +574,6 @@ static __inline Word64 SAR64(Word64 x, int n)
 //
 // Reduced a bit because some of it isn't necessary for 
 // the toolchain that is installed via espup
-
 #ifndef XCHAL_HAVE_ABS
 #ifdef __XCHAL_HAVE_ABS
 #define XCHAL_HAVE_ABS __XCHAL_HAVE_ABS
@@ -583,11 +582,12 @@ static __inline Word64 SAR64(Word64 x, int n)
 #endif
 #endif
 
-typedef long long Word64;
+#include <stdint.h>
+typedef int64_t Word64;
 
 static __inline Word64 MADD64(Word64 sum64, int x, int y)
 {
-    return (sum64 + ((long long)x * y));
+    return (sum64 + ((Word64)x * y));
 }
 
 // GCC produces good code for MULSHIFT32 on xtensa, the naive solution works best
