@@ -567,11 +567,21 @@ static __inline Word64 SAR64(Word64 x, int n)
 	return (x >> n);
 }
 
-#elif defined(__xtensa__) && defined(XCHAL_HAVE_MUL32_HIGH)
+#elif defined(__xtensa__)
 
-// Xtensa ESP32 (implementation from https://github.com/chmorgan/libhelix-mp3, credited to yongjian.ma)
+// Xtensa (ESP32, ESP32-S3, etc.) - implementation from
+// https://github.com/chmorgan/libhelix-mp3 (credited to yongjian.ma)
+//
+// Reduced a bit because some of it isn't necessary for 
+// the toolchain that is installed via espup
 
-#include "xtensa/config/core-isa.h"
+#ifndef XCHAL_HAVE_ABS
+#ifdef __XCHAL_HAVE_ABS
+#define XCHAL_HAVE_ABS __XCHAL_HAVE_ABS
+#else
+#define XCHAL_HAVE_ABS 0
+#endif
+#endif
 
 typedef long long Word64;
 
@@ -580,21 +590,49 @@ static __inline Word64 MADD64(Word64 sum64, int x, int y)
     return (sum64 + ((long long)x * y));
 }
 
-static __inline int MULSHIFT32(int x, int y)
+// GCC produces good code for MULSHIFT32 on xtensa, the naive solution works best
+static inline int MULSHIFT32(int x, int y) 
 {
-    /* important rules for smull RdLo, RdHi, Rm, Rs:
-     *     RdHi and Rm can't be the same register
-     *     RdLo and Rm can't be the same register
-     *     RdHi and RdLo can't be the same register
-     * Note: Rs determines early termination (leading sign bits) so if you want to specify
-     *   which operand is Rs, put it in the SECOND argument (y)
-     * For inline assembly, x and y are not assumed to be R0, R1 so it shouldn't matter
-     *   which one is returned. (If this were a function call, returning y (R1) would
-     *   require an extra "mov r0, r1")
-     */
+    return ((int64_t)x * y) >> 32;
+}
+
+#if XCHAL_HAVE_ABS
+
+static __inline int FASTABS(int x)
+{
     int ret;
-    asm volatile ("mulsh %0, %1, %2" : "=r" (ret) : "r" (x), "r" (y));
+    asm volatile ("abs %0, %1" : "=r" (ret) : "r" (x));
     return ret;
+}
+
+#else
+
+static __inline int FASTABS(int x)
+{
+    int sign = x >> 31;
+    return (x ^ sign) - sign;
+}
+
+#endif
+
+static __inline int CLZ(int x)
+{
+    return __builtin_clz(x);
+}
+
+static __inline Word64 SHL64(Word64 x, int n)
+{
+    return x << n;
+}
+
+static __inline Word64 SAR64(Word64 x, int n)
+{
+    return x >> n;
+}
+
+static __inline short SAR64_Clip(Word64 x)
+{
+    return SAR64(x, 26);
 }
 
 #else
